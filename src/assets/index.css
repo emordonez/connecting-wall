@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    .group-1 {
+        @apply bg-blue-800
+    }
+    .group-2 {
+        @apply bg-green-500
+    }
+    .group-3 {
+        @apply bg-pink-900
+    }
+    .group-4 {
+        @apply bg-teal-700
+    }
+}
