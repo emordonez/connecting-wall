@@ -3,9 +3,8 @@
     ref="box"
     class="aspect-w-16 aspect-h-9 rounded-md select-none transition-transform duration-1000"
     :class="[
-      { [`group-${currentGroup}`]: selected && !found },
-      { 'bg-blue-200': !selected && !found },
-      found ? [`group-${rowIndex} order-${rowIndex}`] : 'order-last'
+      { [`${classes.selected[currentGroup]}`]: selected && !found, 'bg-blue-200': !selected && !found },
+      found ? classes.found[groupIndex] : 'order-last'
     ]"
     @click="selectBrick"
   >
@@ -22,14 +21,28 @@
 <script>
 export default {
   name: 'Brick',
-  props: ['clue', 'groupId', 'currentGroup'],
-  emits: ['clicked'],
+  props: ['clue', 'groupId', 'connection', 'currentGroup'],
+  emits: ['clicked', 'resize'],
   data () {
     return {
       fontSize: '',
       selected: false,
       found: false,
-      rowIndex: 0
+      groupIndex: 0,
+      classes: {
+        found: {
+          1: 'group-1 order-1',
+          2: 'group-2 order-2',
+          3: 'group-3 order-3',
+          4: 'group-4 order-4',
+        },
+        selected: {
+          1: 'group-1',
+          2: 'group-2',
+          3: 'group-3',
+          4: 'group-4'
+        }
+      }
     }
   },
   mounted () {

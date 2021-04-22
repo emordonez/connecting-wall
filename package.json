@@ -22,7 +22,8 @@
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0",
     "postcss": "^7",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "tailwindcss-debug-screens": "^2.0.0"
   },
   "eslintConfig": {
     "root": true,
