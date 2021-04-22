@@ -1,24 +1,32 @@
-# connecting-wall
+# "Only Connect" Connecting Wall
 
-## Project setup
-```
+A web implementation of the connecting wall from the quiz show "Only Connect."
+Find the four links connecting four iteams each among 16 seemingly unrelated clues to solve the wall.
+
+## Upcoming features
+
+- Sound effects
+- Optional elements from the show for extra pressure, such as:
+  - Timer with adjustable time limit
+  - Three strikes once two groups are identified
+- Editor for users to create their own walls
+- Saved/submitted wall repository
+- Further explanation for connections
+- "I give up"
+
+## Setup
+
+Install all dependencies then serve on a local host:
+
+```bash
 yarn install
-```
-
-### Compiles and hot-reloads for development
-```
 yarn serve
 ```
 
-### Compiles and minifies for production
-```
+Compile and minify for production:
+
+```bash
 yarn build
 ```
 
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+The built HTML can then be served from `dist`.

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col w-full">
     <div class="flex flex-row justify-between">
-      <div class="transition-width duration-1000" :class="completed ? 'w-3/4' : 'w-full'">
+      <div class="transition-width duration-1000" :class="completed ? 'w-3/5' : 'w-full'">
         <transition-group tag="div" class="grid grid-cols-4 gap-3">
           <Brick
             v-for="(item, index) in itemList"
@@ -15,7 +15,7 @@
           />
         </transition-group>
       </div>
-      <div class="transition-width duration-1000" :class="completed ? 'w-1/5' : 'w-0'">
+      <div class="transition-width duration-1000" :class="completed ? 'w-1/3' : 'w-0'">
         <div v-if="completed" class="grid grid-cols-1 gap-3 h-full">
           <transition-group 
             tag="div"
@@ -56,45 +56,88 @@ export default {
   },
   data () {
     return {
+      // Dummy data
+      // groups: [
+      //   {
+      //     id: 1,
+      //     connection: 'Connection 1',
+      //     clues: [
+      //       'Clue 1',
+      //       'Clue 2',
+      //       'Clue 3',
+      //       'Clue 4'
+      //     ]
+      //   },
+      //   {
+      //     id: 2,
+      //     connection: 'Connection 2',
+      //     clues: [
+      //       'Clue 5',
+      //       'Clue 6',
+      //       'Clue 7',
+      //       'Clue 8'
+      //     ]
+      //   },
+      //   {
+      //     id: 3,
+      //     connection: 'Connection 3',
+      //     clues: [
+      //       'Clue 9',
+      //       'Clue 10',
+      //       'Clue 11',
+      //       'Clue 12'
+      //     ]
+      //   },
+      //   {
+      //     id: 4,
+      //     connection: 'Connection 4',
+      //     clues: [
+      //       'Clue 13',
+      //       'Clue 14',
+      //       'Clue 15',
+      //       'Clue 16'
+      //     ]
+      //   }
+      // ],
       groups: [
         {
           id: 1,
-          connection: 'Connection 1',
+          connection: 'LA Lakers Hall of Famers',
           clues: [
-            'Clue 1',
-            'Clue 2',
-            'Clue 3',
-            'Clue 4'
+            'Bryant',
+            'Baylor',
+            'West',
+            'Johnson'
           ]
         },
         {
           id: 2,
-          connection: 'Connection 2',
+          connection: "Famous Oliver's",
           clues: [
-            'Clue 5',
-            'Clue 6',
-            'Clue 7',
-            'Clue 8'
+            'Stone',
+            'Hardy',
+            'North',
+            'Heaviside'
           ]
         },
         {
           id: 3,
-          connection: 'Connection 3',
+          connection: 'Add an L at the beginning to get another word',
           clues: [
-            'Clue 9',
-            'Clue 10',
-            'Clue 11',
-            'Clue 12'
+            'East',
+            'Over',
+            'Ace',
+            'Apse'
           ]
         },
         {
           id: 4,
-          connection: 'Connection 4',
+          connection: 'Can be preceded by the word "deep"',
           clues: [
-            'Clue 13',
-            'Clue 14',
-            'Clue 15',
-            'Clue 16'
+            'South',
+            'Sea',
+            'Purple',
+            'Throat'
           ]
         }
       ],
