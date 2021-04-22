@@ -1,16 +1,15 @@
 <template>
-  <div class="grid grid-cols-4 gap-3">
+  <transition-group tag="div" class="grid grid-cols-4 gap-3">
     <Brick
-      v-for="(item, index) in itemsList"
-      :ref="setBrickRefs"
-      :currentGroup="currentGroup"
-      :id="item.id"
+      v-for="(item, index) in itemList"
+      :ref="setBrickRef"
       :clue="item.clue"
       :groupId="item.groupId"
+      :currentGroup="currentGroup"
       :key="index"
       @clicked="addToSelections"
     />
-  </div>
+  </transition-group>
 </template>
 
 <script>
@@ -25,6 +24,7 @@ export default {
     return {
       selections: [],
       solved: [],
+      itemList: [],
       brickRefs: [],
       groups: [
         {
@@ -71,11 +71,33 @@ export default {
       currentGroup: 1
     }
   },
+  mounted () {
+    // Flattens the data
+    let list = this.groups.flatMap((group) => 
+      group.clues.map((clue) => ({
+        clue: clue,
+        groupId: group.id,
+        connection: group.connection
+      }))
+    )
+
+    // Shuffles the array
+    let currIndex = list.length, randIndex, tempVal
+    while (0 !== currIndex) {
+      randIndex = Math.floor(Math.random() * currIndex)
+      currIndex--
+
+      tempVal = list[currIndex]
+      list[currIndex] = list[randIndex]
+      list[randIndex] = tempVal
+    }
+
+    this.itemList = list    
+  },
   methods: {
     addToSelections (brick) {
       if (brick.selected) {
         this.selections.push(brick)
-
         if (this.selections.length === 4) {
           setTimeout(this.checkSelected, 250)
         }
@@ -87,7 +109,7 @@ export default {
     checkSelected () {
       let id = this.selections[0].groupId
 
-      // Correct selection
+      // Correct selections: All groupId's are equal
       if (this.selections.filter((brick) => brick.groupId !== id).length === 0) {
         this.solved.push(this.selections)
         this.updateWall()
@@ -97,7 +119,8 @@ export default {
       })
       this.selections = []
     },
-    setBrickRefs (el) {
+    // Populates an array of Brick references
+    setBrickRef (el) {
       if (el) {
         this.brickRefs.push(el)
       }
@@ -105,48 +128,22 @@ export default {
     updateWall () {
       let last = this.solved.length - 1
 
+      // Set the most recently solved group as found
       this.solved[last].forEach((brick) => {
         brick.found = true
         brick.rowIndex = last + 1
       })
       this.currentGroup++
-      if (last === 2) {
-        let foundGroups = this.solved.map((group) => {
-          return group[0].groupId
-        })
-        this.brickRefs
-          .filter((brick) => !foundGroups.includes(brick.groupId))
-          .forEach((brick) => {
+
+      // Last group is automatically solved and should already be in place
+      if (this.currentGroup === 4) {
+        this.brickRefs.forEach((brick) => {
+          if (brick.rowIndex === 0) {
             brick.found = true
             brick.rowIndex = 4
-          })
-        this.currentGroup++
+          }
+        })
       }
-    }
-  },
-  computed: {
-    itemsList () {
-      var i = 0
-      var list = this.groups.flatMap((group) => 
-        group.clues.map((clue) => ({
-          id: ++i,
-          clue: clue,
-          groupId: group.id,
-          connection: group.connection
-        }))
-      )
-
-      var currIndex = list.length, randIndex, tempVal
-      while (0 !== currIndex) {
-        randIndex = Math.floor(Math.random() * currIndex)
-        currIndex--
-
-        tempVal = list[currIndex]
-        list[currIndex] = list[randIndex]
-        list[randIndex] = tempVal
-      }
-
-      return list
     }
   }
 }

@@ -1,9 +1,9 @@
 <template>
   <div 
-    class="aspect-w-3 aspect-h-2 rounded-md shadow-inner select-none"
+    class="aspect-w-3 aspect-h-2 rounded-md select-none transition-transform duration-1000"
     :class="[
       { [`group-${currentGroup}`]: selected && !found },
-      { 'bg-blue-300': !selected && !found },
+      { 'bg-blue-200': !selected && !found },
       found ? [`group-${rowIndex} order-${rowIndex}`] : 'order-last'
     ]"
     @click="selectBrick"
@@ -20,7 +20,7 @@
 <script>
 export default {
   name: 'Brick',
-  props: ['id', 'clue', 'groupId', 'currentGroup'],
+  props: ['clue', 'groupId', 'currentGroup'],
   emits: ['clicked'],
   data () {
     return {
