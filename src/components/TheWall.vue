@@ -1,15 +1,49 @@
 <template>
-  <transition-group tag="div" class="grid grid-cols-4 gap-3">
-    <Brick
-      v-for="(item, index) in itemList"
-      :ref="setBrickRef"
-      :clue="item.clue"
-      :groupId="item.groupId"
-      :currentGroup="currentGroup"
-      :key="index"
-      @clicked="addToSelections"
-    />
-  </transition-group>
+  <div class="flex flex-col w-full">
+    <div class="flex flex-row justify-between">
+      <div class="transition-width duration-1000" :class="completed ? 'w-3/4' : 'w-full'">
+        <transition-group tag="div" class="grid grid-cols-4 gap-3">
+          <Brick
+            v-for="(item, index) in itemList"
+            :key="index"
+            :ref="setBrickRef"
+            :clue="item.clue"
+            :groupId="item.groupId"
+            :connection="item.connection"
+            :currentGroup="currentGroup"
+            @clicked="addToSelections"
+          />
+        </transition-group>
+      </div>
+      <div class="transition-width duration-1000" :class="completed ? 'w-1/5' : 'w-0'">
+        <div v-if="completed" class="grid grid-cols-1 gap-3 h-full">
+          <transition-group 
+            tag="div"
+            v-for="group in solved"
+            :key="group.id"
+            class="flex justify-center items-center w-full h-full border-4 rounded-md bg-black select-none cursor-pointer"
+            :class="groupClasses[group.id]"
+            @click="revealLink(group)"
+          >
+            <p 
+              class="font-medium text-lg text-center lg:text-xl"
+              :class="showLinks ? 'text-white' : 'text-transparent'"
+            >
+              {{ group.text }}
+            </p>
+          </transition-group>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center items-center p-6">
+      <h2 v-if="completed" class="my-6 text-white text-2xl text-center lg:text-4xl">
+        You solved the wall! Click to reveal the connections.
+      </h2>
+      <h2 v-else class="my-6 text-white text-2xl text-center lg:text-4xl">
+        This is where the timer will go.
+      </h2>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -22,10 +56,6 @@ export default {
   },
   data () {
     return {
-      selections: [],
-      solved: [],
-      itemList: [],
-      brickRefs: [],
       groups: [
         {
           id: 1,
@@ -68,7 +98,19 @@ export default {
           ]
         }
       ],
-      currentGroup: 1
+      itemList: [],
+      brickRefs: [],
+      selections: [],
+      solved: [],
+      currentGroup: 1,
+      groupClasses: {
+        1: 'group-1',
+        2: 'group-2',
+        3: 'group-3',
+        4: 'group-4'
+      },
+      completed: false,
+      showLinks: false
     }
   },
   mounted () {
@@ -114,35 +156,61 @@ export default {
         this.solved.push(this.selections)
         this.updateWall()
       }
+      // Clear selections whether correct or incorrect
       this.selections.forEach((brick) => {
         brick.selected = false
       })
       this.selections = []
     },
-    // Populates an array of Brick references
+    revealLink (group) {
+      group.text = group.connection
+    },
     setBrickRef (el) {
-      if (el) {
+      // Keeps an array of references to Bricks not found, initially 16
+      if (!el.found && !this.brickRefs.includes(el)) {
         this.brickRefs.push(el)
       }
+    },
+    updateSolvedGroups () {
+      // Maintains an array of the groups in the order they were solved in
+      this.solved = this.solved.map((group, index) => {
+        if (Array.isArray(group)) {
+          return {
+            id: index + 1,
+            connection: group[0].connection,
+            text: 'What is the link?'
+          }
+        }
+        return group
+      })
     },
     updateWall () {
       let last = this.solved.length - 1
 
-      // Set the most recently solved group as found
+      // Set the most recently solved group as found and indexed
       this.solved[last].forEach((brick) => {
         brick.found = true
-        brick.rowIndex = last + 1
+        brick.groupIndex = last + 1
       })
       this.currentGroup++
+      this.updateSolvedGroups()
+
+      // No more need to reference found Bricks
+      this.brickRefs = this.brickRefs.filter((brick) => !brick.found)
 
       // Last group is automatically solved and should already be in place
       if (this.currentGroup === 4) {
+        let finalSelection = []
         this.brickRefs.forEach((brick) => {
-          if (brick.rowIndex === 0) {
-            brick.found = true
-            brick.rowIndex = 4
-          }
+          brick.found = true
+          brick.groupIndex = 4
+          finalSelection.push(brick)
         })
+        this.brickRefs = []
+        this.solved.push(finalSelection)
+        this.updateSolvedGroups()
+        this.completed = true
+        setTimeout(() => { this.showLinks = true }, 1250)
       }
     }
   }

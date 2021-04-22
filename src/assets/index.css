@@ -4,15 +4,15 @@
 
 @layer base {
     .group-1 {
-        @apply bg-blue-900;
+        @apply border-blue-900 bg-blue-900;
     }
     .group-2 {
-        @apply bg-green-700;
+        @apply border-green-700 bg-green-700;
     }
     .group-3 {
-        @apply bg-pink-1000;
+        @apply border-pink-1000 bg-pink-1000;
     }
     .group-4 {
-        @apply bg-cyan-700;
+        @apply border-cyan-700 bg-cyan-700;
     }
 }
