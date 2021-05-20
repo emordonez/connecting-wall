@@ -1,18 +1,19 @@
 <template>
-  <div
-    class="max-w-screen-xl bg-hero-floating-cogs"
-  >
+  <div class="flex justify-center items-center max-w-screen-xl bg-hero-floating-cogs">
     <Modal
       v-if="!completed && showModal"
       :title="'Ready?'"
-      :content="'You will have three minutes to solve the wall. ' +
-        'Click to select and unselect clues. ' +
+      :content="'You\'ll have three minutes to solve the wall. ' +
+        'Click to select or unselect items, looking for four groups of four connected items. ' +
         'Beware of red herrings!'
       "
       :buttonText="'Begin'"
       @toggleModal="toggleModal"
     />
-    <div class="flex flex-col w-11/12 py-3 mx-auto sm:py-6">
+    <div
+      class="relative flex flex-col w-11/12 py-3 mx-auto sm:py-6"
+      :class="showModal ? 'filter blur' : 'filter-none'"
+    >
       <ConnectingWall :completed="completed" :groups="groups" @solvedWall="solvedWall" />
       <h2 v-if="completed" class="my-6 text-white text-2xl text-center">
         You solved the wall! What are the connections?
@@ -107,12 +108,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.open > * {
-  filter: blur(8px);
-}
-.closed > * {
-  filter: none;
-}
-</style>
