@@ -1,5 +1,17 @@
 <template>
-  <div class="max-w-screen-xl bg-hero-floating-cogs">
+  <div
+    class="max-w-screen-xl bg-hero-floating-cogs"
+  >
+    <Modal
+      v-if="!completed && showModal"
+      :title="'Ready?'"
+      :content="'You will have three minutes to solve the wall. ' +
+        'Click to select and unselect clues. ' +
+        'Beware of red herrings!'
+      "
+      :buttonText="'Begin'"
+      @toggleModal="toggleModal"
+    />
     <div class="flex flex-col w-11/12 py-3 mx-auto sm:py-6">
       <ConnectingWall :completed="completed" :groups="groups" @solvedWall="solvedWall" />
       <h2 v-if="completed" class="my-6 text-white text-2xl text-center">
@@ -13,6 +25,7 @@
 <script>
 import data from '@/assets/data.json'
 import ConnectingWall from '@/components/ConnectingWall.vue'
+import Modal from '@/components/Modal.vue'
 import Timer from '@/components/Timer.vue'
 
 export default {
@@ -21,11 +34,13 @@ export default {
   },
   components: {
     ConnectingWall,
+    Modal,
     Timer
   },
   data () {
     return {
-      completed: false
+      completed: false,
+      showModal: true
     }
   },
   beforeRouteLeave (to, from, next) {
@@ -76,6 +91,9 @@ export default {
   methods: {
     solvedWall (isSolved) {
       this.completed = isSolved
+    },
+    toggleModal () {
+      this.showModal = !this.showModal
     }
   },
   watch: {
@@ -89,3 +107,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.open > * {
+  filter: blur(8px);
+}
+.closed > * {
+  filter: none;
+}
+</style>
