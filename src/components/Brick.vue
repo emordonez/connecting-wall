@@ -9,7 +9,7 @@
     @click="selectBrick"
   >
     <p
-      class="flex justify-center items-center font-semibold"
+      class="flex justify-center items-center font-medium"
       :class="{ 'text-white': selected || found }"
       :style="{ fontSize: fontSize }"
     >
@@ -20,8 +20,12 @@
 
 <script>
 export default {
-  name: 'Brick',
-  props: ['clue', 'groupId', 'connection', 'currentGroup'],
+  props: {
+    clue: String,
+    groupId: Number,
+    connection: String,
+    currentGroup: Number
+  },
   emits: ['clicked', 'resize'],
   data () {
     return {
@@ -54,9 +58,11 @@ export default {
     }
   },
   methods: {
+    // Scales font size to width of the Brick
     initObserver () {
       const observer = new ResizeObserver(this.onResize)
       observer.observe(this.$refs.box)
+
       this.observer = observer
     },
     onResize() {

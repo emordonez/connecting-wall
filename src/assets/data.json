@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "groups": [
+      {
+        "id": 1,
+        "connection": "End with a silent letter",
+        "clues": [
+          "Crumb",
+          "Autumn",
+          "Coup",
+          "Debris"
+        ]
+      },
+      {
+        "id": 2,
+        "connection": "Pork products",
+        "clues": [
+          "Lechon",
+          "Prosciutto",
+          "Bacon",
+          "Speck"
+        ]
+      },
+      {
+        "id": 3,
+        "connection": "Small amount",
+        "clues": [
+          "Smidgen",
+          "Trace",
+          "Iota",
+          "Morsel"
+        ]
+      },
+      {
+        "id": 4,
+        "connection": "Terms in backgammon",
+        "clues": [
+          "Anchor",
+          "Bear off",
+          "Pip",
+          "Gammon"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "groups": [
+      {
+        "id": 1,
+        "connection": "Beginnings",
+        "clues": [
+          "Genesis",
+          "Seed",
+          "Dawn",
+          "Fount"
+        ]
+      },
+      {
+        "id": 2,
+        "connection": "Marks",
+        "clues": [
+          "Question",
+          "Water",
+          "Birth",
+          "Trade"
+        ]
+      },
+      {
+        "id": 3,
+        "connection": "Areas of land",
+        "clues": [
+          "Stretch",
+          "Plot",
+          "Parcel",
+          "Belt"
+        ]
+      },
+      {
+        "id": 4,
+        "connection": "___arian",
+        "clues": [
+          "Barb",
+          "Fruit",
+          "Sect",
+          "Tract"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "groups": [
+      {
+        "id": 1,
+        "connection": "'Mr. ___' song titles",
+        "clues": [
+          "Sandman",
+          "Brightside",
+          "Vain",
+          "Bojangles"
+        ]
+      },
+      {
+        "id": 2,
+        "connection": "___ thinking",
+        "clues": [
+          "Blue sky",
+          "Lateral",
+          "Wishful",
+          "Negative"
+        ]
+      },
+      {
+        "id": 3,
+        "connection": "Coffee",
+        "clues": [
+          "Flat white",
+          "Espresso",
+          "Irish",
+          "Lungo"
+        ]
+      },
+      {
+        "id": 4,
+        "connection": "Terms in photography",
+        "clues": [
+          "DSLR",
+          "Focus",
+          "Filter",
+          "Exposure"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "groups": [
+      {
+        "id": 1,
+        "connection": "Arabian ports",
+        "clues": [
+          "Muscat",
+          "Jeddah",
+          "Aden",
+          "Dubai"
+        ]
+      },
+      {
+        "id": 2,
+        "connection": "Wine grapes",
+        "clues": [
+          "Merlot",
+          "Syrah",
+          "Pinot noir",
+          "Sémillon"
+        ]
+      },
+      {
+        "id": 3,
+        "connection": "Words for 'dog'",
+        "clues": [
+          "Hound",
+          "Pooch",
+          "Mutt",
+          "Cur"
+        ]
+      },
+      {
+        "id": 4,
+        "connection": "Sound like a letter + number",
+        "clues": [
+          "Kuwait",
+          "Eaten",
+          "Before",
+          "Canine"
+        ]
+      }
+    ]
+  }
+]

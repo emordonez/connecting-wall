@@ -12,6 +12,9 @@ module.exports = {
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
+    fontFamily: {
+      sans: ['Roboto', 'ui-sans']
+    },
     extend: {
       colors: {
         cyan: colors.cyan,
@@ -29,6 +32,15 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/aspect-ratio'),
+    require('tailwind-heropatterns')({
+      patterns: ['floating-cogs'],
+      colors: {
+        default: '#1F2937'
+      },
+      opacity: {
+        default: '1.0'
+      }
+    }),
     require('tailwindcss-debug-screens')
   ],
 }
