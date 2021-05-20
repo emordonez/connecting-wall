@@ -1,7 +1,11 @@
 <template>
-  <header class="w-full px-8 py-4 bg-white">
-    <nav class="flex justify-between items-center">
-      <div class="flex space-x-8">
+  <header class="w-full px-8 py-4 bg-gray-50">
+    <nav class="flex flex-col justify-between items-start space-y-4
+      sm:flex-row sm:items-center sm:space-y-0"
+    >
+      <div class="flex flex-col items-start space-y-2
+        sm:flex-row sm:items-center sm:space-x-6 sm:space-y-0"
+      >
         <RouterLink
           v-for="link in links"
           :key="link"
@@ -18,7 +22,7 @@
       >
         <button
           class="block px-3 py-2 bg-blue-600
-            font-semibold text-sm tracking-wide uppercase
+            font-semibold text-sm text-left tracking-wide uppercase
             hover:bg-blue-900"
         >
           See this project on GitHub

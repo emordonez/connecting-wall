@@ -1,7 +1,8 @@
 <template>
   <div
     ref="box"
-    class="aspect-w-16 aspect-h-9 rounded-md select-none transition-transform duration-1000"
+    class="aspect-w-5 aspect-h-2 rounded-md select-none transition-transform duration-1000
+      sm:aspect-w-16 sm:aspect-h-9"
     :class="[
       { [`${classes.selected[currentGroup]}`]: selected && !found, 'bg-blue-200': !selected && !found },
       found ? classes.found[groupIndex] : 'order-last'

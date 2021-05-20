@@ -1,5 +1,5 @@
 <template>
-  <div class="h-8 w-full rounded-md bg-blue-200">
+  <div class="h-6 w-full rounded-md bg-blue-200 sm:h-8">
     <div
       class="time-bar rounded-md"
       data-style="smooth"

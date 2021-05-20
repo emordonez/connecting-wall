@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col justify-between min-h-screen min-w-full bg-black">
+  <div class="flex flex-col-reverse justify-between min-h-screen min-w-full bg-black sm:flex-col">
     <Header />
-    <RouterView :key="$route.fullPath" class="flex-grow w-full p-6 mx-auto" />
+    <RouterView :key="$route.fullPath" class="flex-grow w-full p-3 mx-auto sm:p-6" />
   </div>
 </template>
 

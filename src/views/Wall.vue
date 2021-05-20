@@ -1,9 +1,9 @@
 <template>
   <div class="max-w-screen-xl bg-hero-floating-cogs">
-    <div class="flex flex-col w-11/12 py-6 mx-auto">
+    <div class="flex flex-col w-11/12 py-3 mx-auto sm:py-6">
       <div class="flex flex-row justify-between">
         <div class="transition-width duration-1000" :class="completed ? 'w-3/5' : 'w-full'">
-          <transition-group tag="div" class="grid grid-cols-1 gap-3 md:grid-cols-4">
+          <transition-group tag="div" class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
             <Brick
               v-for="(item, index) in itemList"
               :key="index"

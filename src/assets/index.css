@@ -21,10 +21,10 @@
     }
 
     div.content {
-        @apply p-6 text-lg;
+        @apply p-2 text-lg sm:p-6;
     }
     div.content h1 {
-        @apply py-6 font-medium text-4xl;
+        @apply pb-3 font-semibold text-3xl sm:font-medium sm:text-4xl;
     }
     div.content p {
         @apply py-3;
