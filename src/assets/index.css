@@ -15,4 +15,18 @@
     .group-4 {
         @apply border-cyan-700 bg-cyan-700;
     }
+
+    .link {
+        @apply text-blue-200 underline;
+    }
+
+    div.content {
+        @apply p-2 text-lg sm:p-6;
+    }
+    div.content h1 {
+        @apply pb-3 font-semibold text-3xl sm:font-medium sm:text-4xl;
+    }
+    div.content p {
+        @apply py-3;
+    }
 }

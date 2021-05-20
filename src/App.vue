@@ -1,16 +1,16 @@
 <template>
-  <div class="max-w-screen-xl p-6 mx-auto bg-black">
-    <Wall />
+  <div class="flex flex-col-reverse justify-between min-h-screen min-w-full bg-black sm:flex-col">
+    <Header />
+    <RouterView :key="$route.fullPath" class="flex-grow w-full p-3 mx-auto sm:p-6" />
   </div>
 </template>
 
 <script>
-import Wall from './components/TheWall.vue'
+import Header from '@/components/Header.vue'
 
 export default {
-  name: 'App',
   components: {
-    Wall
+    Header
   }
 }
 </script>
