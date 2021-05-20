@@ -11,11 +11,7 @@
 <script>
 export default {
   props: {
-    completed: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
+    completed: Boolean
   },
   data () {
     return {
