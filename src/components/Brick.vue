@@ -25,7 +25,8 @@ export default {
     clue: String,
     groupId: Number,
     connection: String,
-    currentGroup: Number
+    currentGroup: Number,
+    outOfTime: Boolean
   },
   emits: ['clicked', 'resize'],
   data () {
@@ -74,6 +75,9 @@ export default {
       this.$emit('resize', fontSize)
     },
     selectBrick () {
+      if (this.outOfTime) {
+        return
+      }
       if (!this.found) {
         this.selected = !this.selected
         this.$emit('clicked', this)

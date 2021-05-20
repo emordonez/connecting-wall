@@ -11,18 +11,20 @@
 <script>
 export default {
   props: {
+    started: Boolean,
     completed: Boolean
   },
   data () {
     return {
+      // TODO: Change back to the regular limit, maybe from a global variable
       // Time limit in seconds
-      limit: 180
+      limit: 10
     }
   },
   computed: {
-    // Avoids directly mutating the prop
+    // Avoids directly mutating the props
     inProgress () {
-      return !this.completed
+      return !this.completed && this.started
     }
   }
 }

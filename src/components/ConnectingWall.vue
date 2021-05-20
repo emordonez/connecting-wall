@@ -10,6 +10,7 @@
           :groupId="item.groupId"
           :connection="item.connection"
           :currentGroup="currentGroup"
+          :outOfTime="outOfTime"
           @clicked="addToSelections"
         />
       </transition-group>
@@ -44,6 +45,7 @@ import Brick from '@/components/Brick.vue'
 export default {
   props: {
     completed: Boolean,
+    outOfTime: Boolean,
     groups: Array
   },
   components: {

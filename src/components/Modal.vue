@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO: Transition classes -->
   <div class="fixed z-10 flex flex-col w-72 p-6 border rounded
     border-black bg-gray-50
     sm:w-96"

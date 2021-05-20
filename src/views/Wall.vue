@@ -1,7 +1,8 @@
 <template>
   <div class="flex justify-center items-center max-w-screen-xl bg-hero-floating-cogs">
+    <!-- TODO: Modal transitions -->
     <Modal
-      v-if="!completed && showModal"
+      v-if="!started && showModal"
       :title="'Ready?'"
       :content="'You\'ll have three minutes to solve the wall. ' +
         'Click to select or unselect items, looking for four groups of four connected items. ' +
@@ -10,15 +11,28 @@
       :buttonText="'Begin'"
       @toggleModal="toggleModal"
     />
+    <Modal 
+      v-if="outOfTime && showModal"
+      :title="'You ran out of time!'"
+      :content="'You can see the solution and still get points for the connections of the groups ' +
+        'you didn\'t find.'"
+      :buttonText="'Continue'"
+      @toggleModal="toggleModal"
+    />
     <div
       class="relative flex flex-col w-11/12 py-3 mx-auto sm:py-6"
       :class="showModal ? 'filter blur' : 'filter-none'"
     >
-      <ConnectingWall :completed="completed" :groups="groups" @solvedWall="solvedWall" />
+      <ConnectingWall
+        :completed="completed"
+        :groups="groups"
+        :outOfTime="outOfTime"
+        @solvedWall="solvedWall"
+      />
       <h2 v-if="completed" class="my-6 text-white text-2xl text-center">
         You solved the wall! What are the connections?
       </h2>
-      <Timer v-else :completed="completed" class="my-6" />
+      <Timer v-else :started="started" :completed="completed" class="my-6" />
     </div>
   </div>
 </template>
@@ -40,7 +54,9 @@ export default {
   },
   data () {
     return {
+      started: false,
       completed: false,
+      outOfTime: false,
       showModal: true
     }
   },
@@ -90,11 +106,23 @@ export default {
     }
   },  
   methods: {
+    checkIfSolved () {
+      if (!this.completed) {
+        this.outOfTime = true
+        this.showModal = true
+      }
+    },
     solvedWall (isSolved) {
       this.completed = isSolved
+      this.checkIfSolved()
     },
     toggleModal () {
       this.showModal = !this.showModal
+      if (!this.started) {
+        this.started = true
+        // TODO: Change back to the regular limit, maybe from a global variable
+        setTimeout(this.checkIfSolved, 10 * 1000)
+      }
     }
   },
   watch: {
