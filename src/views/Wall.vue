@@ -24,6 +24,7 @@
       :class="showModal ? 'filter blur' : 'filter-none'"
     >
       <ConnectingWall
+        ref="wall"
         :completed="completed"
         :groups="groups"
         :outOfTime="outOfTime"
@@ -31,6 +32,9 @@
       />
       <h2 v-if="completed" class="my-6 text-white text-2xl text-center">
         You solved the wall! What are the connections?
+      </h2>
+      <h2 v-if="outOfTime" class="my-6 text-white text-2xl text-center">
+        What are the connections?
       </h2>
       <Timer
         v-else
@@ -61,7 +65,7 @@ export default {
   data () {
     return {
       // timeLimit is in seconds
-      timeLimit: 180,
+      timeLimit: 3,
       started: false,
       completed: false,
       outOfTime: false,
@@ -69,7 +73,7 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
-    if (!this.completed) {
+    if (!this.completed && !this.outOfTime) {
       const answer = window.confirm('You haven\'t solved the wall yet! Are you sure you want to leave?')
       if (answer) {
         next()
@@ -129,6 +133,9 @@ export default {
       if (!this.started) {
         this.started = true
         setTimeout(this.checkIfSolved, this.timeLimit * 1000)
+      }
+      if (this.outOfTime) {
+        setTimeout(this.$refs.wall.resolveWall, 1000)
       }
     }
   },

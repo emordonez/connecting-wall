@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-row justify-between">
-    <div class="transition-width duration-1000" :class="completed ? 'w-3/5' : 'w-full'">
+    <div class="transition-width duration-1000" :class="finished ? 'w-3/5' : 'w-full'">
       <transition-group tag="div" class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
         <Brick
           v-for="(item, index) in itemList"
@@ -15,9 +15,9 @@
         />
       </transition-group>
     </div>
-    <div class="transition-width duration-1000" :class="completed ? 'w-1/3' : 'w-0'">
-      <div v-if="completed" class="grid grid-cols-1 gap-3 h-full">
-        <transition-group 
+    <div class="transition-width duration-1000" :class="finished ? 'w-1/3' : 'w-0'">
+      <div v-if="finished" class="grid grid-cols-1 gap-3 h-full">
+        <transition
           tag="div"
           v-for="group in solved"
           :key="group.id"
@@ -33,7 +33,7 @@
           >
             {{ group.text }}
           </p>
-        </transition-group>
+        </transition>
       </div>
     </div>
   </div>
@@ -92,6 +92,11 @@ export default {
     // itemsList is computed in the mounted hook so that it isn't cached
     this.itemList = list      
   },
+  computed: {
+    finished () {
+      return this.completed || this.outOfTime
+    }
+  },
   methods: {
     addToSelections (brick) {
       if (brick.selected) {
@@ -118,6 +123,25 @@ export default {
       })
       this.selections = []
     },
+    resolveWall () {
+      // Iterate up to currentGroup === 4
+      //  Final group resolution happens in updateWall
+      while (this.currentGroup < 4) {
+        let brickToSolve = this.brickRefs[0]
+        let arr = [brickToSolve]
+        for (let i = 1; i < this.brickRefs.length; i++) {
+          let currentBrick = this.brickRefs[i]
+          if (currentBrick.groupId === brickToSolve.groupId) {
+            arr.push(currentBrick)
+          }
+          if (arr.length === 4) {
+            this.solved.push(arr)
+            this.updateWall()
+            break
+          }
+        }
+      }
+    },
     revealLink (group) {
       group.text = group.connection
     },
@@ -141,12 +165,10 @@ export default {
       })
     },
     updateWall () {
-      let last = this.solved.length - 1
-
       // Sets the most recently solved group as found and indexed
-      this.solved[last].forEach((brick) => {
+      this.solved[this.solved.length - 1].forEach((brick) => {
         brick.found = true
-        brick.groupIndex = last + 1
+        brick.groupIndex = this.currentGroup
       })
       this.currentGroup++
       this.updateSolvedGroups()
@@ -159,13 +181,15 @@ export default {
         let finalSelection = []
         this.brickRefs.forEach((brick) => {
           brick.found = true
-          brick.groupIndex = 4
+          brick.groupIndex = this.currentGroup
           finalSelection.push(brick)
         })
         this.brickRefs = []
         this.solved.push(finalSelection)
         this.updateSolvedGroups()
-        this.$emit('solvedWall', true)
+        if (!this.outOfTime) {
+          this.$emit('solvedWall', true)
+        }
         setTimeout(() => { this.showLinks = true }, 1250)
       }
     }
