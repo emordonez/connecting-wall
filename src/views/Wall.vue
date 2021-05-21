@@ -32,7 +32,13 @@
       <h2 v-if="completed" class="my-6 text-white text-2xl text-center">
         You solved the wall! What are the connections?
       </h2>
-      <Timer v-else :started="started" :completed="completed" class="my-6" />
+      <Timer
+        v-else
+        :timeLimit="timeLimit"
+        :started="started"
+        :completed="completed"
+        class="my-6"
+      />
     </div>
   </div>
 </template>
@@ -54,6 +60,8 @@ export default {
   },
   data () {
     return {
+      // timeLimit is in seconds
+      timeLimit: 180,
       started: false,
       completed: false,
       outOfTime: false,
@@ -120,8 +128,7 @@ export default {
       this.showModal = !this.showModal
       if (!this.started) {
         this.started = true
-        // TODO: Change back to the regular limit, maybe from a global variable
-        setTimeout(this.checkIfSolved, 10 * 1000)
+        setTimeout(this.checkIfSolved, this.timeLimit * 1000)
       }
     }
   },
