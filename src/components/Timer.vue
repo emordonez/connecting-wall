@@ -3,7 +3,7 @@
     <div
       class="time-bar rounded-md"
       data-style="smooth"
-      :style="inProgress ? `--duration: ${limit};` : '--duration: 0;'"
+      :style="inProgress ? `--duration: ${timeLimit};` : ''"
     />
   </div>
 </template>
@@ -11,22 +11,15 @@
 <script>
 export default {
   props: {
-    completed: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
-  },
-  data () {
-    return {
-      // Time limit in seconds
-      limit: 180
-    }
+    // timeLimit is in seconds
+    timeLimit: Number,
+    started: Boolean,
+    completed: Boolean
   },
   computed: {
-    // Avoids directly mutating the prop
+    // Avoids directly mutating the game progress props
     inProgress () {
-      return !this.completed
+      return !this.completed && this.started
     }
   }
 }
