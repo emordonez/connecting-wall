@@ -1,7 +1,7 @@
 <template>
-  <div class="h-6 w-full rounded-md bg-blue-200 sm:h-8">
+  <div class="h-6 w-full rounded-lg bg-blue-200 sm:h-8">
     <div
-      class="time-bar rounded-md"
+      class="time-bar rounded-lg"
       data-style="smooth"
       :style="inProgress ? `--duration: ${timeLimit};` : ''"
     />
@@ -30,7 +30,7 @@ export default {
   overflow: hidden;
   height: inherit;
   width: inhert;
-  background: linear-gradient(to bottom, blue, #000099);
+  background: linear-gradient(to bottom, #2563EB, #1E40AF);
   animation: roundtime calc(var(--duration) * 1s) linear forwards;
   transform-origin: left center;
 }

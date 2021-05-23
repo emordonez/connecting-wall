@@ -1,44 +1,65 @@
 <template>
   <div class="flex justify-center items-center max-w-screen-xl bg-hero-floating-cogs">
     <!-- TODO: Modal transitions -->
+    <!-- Start modal, begins the game -->
     <Modal
       v-if="!started && showModal"
       :title="'Ready?'"
-      :content="'You\'ll have three minutes to solve the wall. ' +
-        'Click to select or unselect items, looking for four groups of four connected items. ' +
-        'Beware of red herrings!'
-      "
+      :content="['You have three minutes to solve the wall. Click to select or unselect items.',
+        'Look for four groups of four connected items. Beware of red herrings!',
+        'After finding two groups, you have three strkes to identify the other two.'
+      ]"
       :buttonText="'Begin'"
       @toggleModal="toggleModal"
     />
+    <!-- Game over modal, out of time -->
     <Modal 
       v-if="outOfTime && showModal"
       :title="'You ran out of time!'"
-      :content="'You can see the solution and still get points for the connections of the groups ' +
-        'you didn\'t find.'"
+      :content="'You can now see the solution and try to identify the remaining connections.'"
+      :buttonText="'Continue'"
+      @toggleModal="toggleModal"
+    />
+    <!-- Game over modal, three strikes -->
+    <Modal
+      v-if="strikesRemaining === 0 && showModal"
+      :title="'Three strikes!'"
+      :content="'The wall has frozen! But you can now see the remaining two groups.'"
       :buttonText="'Continue'"
       @toggleModal="toggleModal"
     />
     <div
-      class="relative flex flex-col w-11/12 py-3 mx-auto sm:py-6"
+      class="relative flex flex-col w-full sm:w-11/12 py-3 mx-auto sm:py-6"
       :class="showModal ? 'filter blur' : 'filter-none'"
     >
       <ConnectingWall
-        :completed="completed"
+        ref="wall"
         :groups="groups"
-        :outOfTime="outOfTime"
-        @solvedWall="solvedWall"
-      />
-      <h2 v-if="completed" class="my-6 text-white text-2xl text-center">
-        You solved the wall! What are the connections?
-      </h2>
-      <Timer
-        v-else
-        :timeLimit="timeLimit"
-        :started="started"
         :completed="completed"
-        class="my-6"
+        :outOfTime="outOfTime"
+        @checkIfSolved="checkIfSolved"
+        @twoGroupsRemaining="twoGroupsRemaining = true"
+        @decrementStrikes="strikesRemaining--"
       />
+      <div v-if="finished" class="p-3 my-6 border rounded-md bg-black border-blue-200 select-none">
+        <h2 class="text-white text-xl text-center sm:text-2xl">
+          {{ message }}
+        </h2>
+      </div>
+      <div v-else class="flex flex-col-reverse justify-center items-center sm:flex-row">
+        <div
+          class="flex flex-row justify-evenly w-1/3 sm:w-1/4"
+          :class="twoGroupsRemaining ? 'block' : 'invisible'"
+        >
+          <span v-for="strike in strikesRemaining" :key="strike" class="dot" />
+        </div>
+        <Timer
+          :timeLimit="timeLimit"
+          :started="started"
+          :completed="completed"
+          class="w-full my-6 sm:w-3/4"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -62,14 +83,19 @@ export default {
     return {
       // timeLimit is in seconds
       timeLimit: 180,
+      // timer is a setTimeout to be cleared if the wall is solved in time
+      timer: null,
       started: false,
       completed: false,
       outOfTime: false,
+      twoGroupsRemaining: false,
+      strikesRemaining: 3,
+      // Start modal shows at load to begin the game
       showModal: true
     }
   },
   beforeRouteLeave (to, from, next) {
-    if (!this.completed) {
+    if (!this.completed && !this.outOfTime) {
       const answer = window.confirm('You haven\'t solved the wall yet! Are you sure you want to leave?')
       if (answer) {
         next()
@@ -87,7 +113,6 @@ export default {
           return data[i].groups
         }
       }
-
       // Default wall
       return [
         {
@@ -111,24 +136,41 @@ export default {
           "clues": ["Anchor", "Bear off", "Pip", "Gammon"]
         }
       ]
+    },
+    finished () {
+      return this.completed || this.outOfTime || this.strikesRemaining === 0
+    },
+    message () {
+      if (this.completed) {
+        return 'You solved the wall! What are the connections?'
+      }
+      return 'What are the connections of the groups you didn\'t find?'
     }
   },  
   methods: {
-    checkIfSolved () {
-      if (!this.completed) {
+    checkIfSolved (inTime) {
+      clearTimeout(this.timer)
+      if (!inTime) {
         this.outOfTime = true
         this.showModal = true
+      } else if (this.strikesRemaining === 0) {
+        this.showModal = true
+      } else {
+        this.completed = true
       }
-    },
-    solvedWall (isSolved) {
-      this.completed = isSolved
-      this.checkIfSolved()
     },
     toggleModal () {
       this.showModal = !this.showModal
+      // Start modal, begins the game
       if (!this.started) {
         this.started = true
-        setTimeout(this.checkIfSolved, this.timeLimit * 1000)
+        this.timer = setTimeout(() => {
+          this.checkIfSolved(this.completed)
+        }, this.timeLimit * 1000)
+      }
+      // Game over modal, resolves the wall
+      if (this.outOfTime || this.strikesRemaining === 0) {
+        setTimeout(this.$refs.wall.resolveWall, 1000)
       }
     }
   },

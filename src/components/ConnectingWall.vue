@@ -1,7 +1,11 @@
 <template>
-  <div class="flex flex-row justify-between">
-    <div class="transition-width duration-1000" :class="completed ? 'w-3/5' : 'w-full'">
-      <transition-group tag="div" class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
+  <div class="flex flex-col justify-between sm:flex-row">
+    <div class="transition-width duration-1000" :class="finished ? 'sm:w-5/8' : 'sm:w-full'">
+      <transition-group
+        tag="div"
+        class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3"
+        :class="{ 'grid-cols-4' : finished }"
+      >
         <Brick
           v-for="(item, index) in itemList"
           :key="index"
@@ -15,9 +19,9 @@
         />
       </transition-group>
     </div>
-    <div class="transition-width duration-1000" :class="completed ? 'w-1/3' : 'w-0'">
-      <div v-if="completed" class="grid grid-cols-1 gap-3 h-full">
-        <transition-group 
+    <div class="pt-8 transition-width duration-1000 sm:pt-0" :class="finished ? 'sm:w-1/3' : 'sm:w-0'">
+      <div v-if="showLinks" class="grid grid-cols-1 gap-3 h-full">
+        <transition
           tag="div"
           v-for="group in solved"
           :key="group.id"
@@ -28,12 +32,12 @@
           @click="revealLink(group)"
         >
           <p 
-            class="font-medium text-lg text-center lg:text-xl"
+            class="font-medium text-center sm:text-xl"
             :class="showLinks ? 'text-white' : 'text-transparent'"
           >
             {{ group.text }}
           </p>
-        </transition-group>
+        </transition>
       </div>
     </div>
   </div>
@@ -44,14 +48,14 @@ import Brick from '@/components/Brick.vue'
 
 export default {
   props: {
+    groups: Array,
     completed: Boolean,
-    outOfTime: Boolean,
-    groups: Array
+    outOfTime: Boolean
   },
   components: {
     Brick
   },
-  emits: ['solvedWall'],
+  emits: ['checkIfSolved', 'twoGroupsRemaining', 'decrementStrikes'],
   data () {
     return {
       itemList: [],
@@ -59,12 +63,15 @@ export default {
       selections: [],
       solved: [],
       currentGroup: 1,
+      // Local strike count needed for emits to time properly
+      strikeCount: 0,
       groupClasses: {
         1: 'group-1',
         2: 'group-2',
         3: 'group-3',
         4: 'group-4'
       },
+      finished: false,
       showLinks: false
     }
   },
@@ -77,7 +84,6 @@ export default {
         connection: group.connection
       }))
     )
-
     // Shuffles the array
     let currIndex = list.length, randIndex, tempVal
     while (0 !== currIndex) {
@@ -88,7 +94,6 @@ export default {
       list[currIndex] = list[randIndex]
       list[randIndex] = tempVal
     }
-
     // itemsList is computed in the mounted hook so that it isn't cached
     this.itemList = list      
   },
@@ -111,12 +116,40 @@ export default {
       if (this.selections.filter((brick) => brick.groupId !== id).length === 0) {
         this.solved.push(this.selections)
         this.updateWall()
+      } else {
+        // Strikes apply after two groups have been found
+        if (this.currentGroup === 3) {
+          this.$emit('decrementStrikes')
+          this.strikeCount++
+        }
+        if (this.strikeCount === 3) {
+          this.$emit('checkIfSolved', false)
+        }
       }
       // Clear selections whether correct or incorrect
       this.selections.forEach((brick) => {
         brick.selected = false
       })
       this.selections = []
+    },
+    resolveWall () {
+      // Iterate up to currentGroup === 4
+      //  Final group resolution happens in updateWall
+      while (this.currentGroup < 4) {
+        let brickToSolve = this.brickRefs[0]
+        let arr = [brickToSolve]
+        for (let i = 1; i < this.brickRefs.length; i++) {
+          let currentBrick = this.brickRefs[i]
+          if (currentBrick.groupId === brickToSolve.groupId) {
+            arr.push(currentBrick)
+          }
+          if (arr.length === 4) {
+            this.solved.push(arr)
+            this.updateWall()
+            break
+          }
+        }
+      }
     },
     revealLink (group) {
       group.text = group.connection
@@ -134,22 +167,25 @@ export default {
           return {
             id: index + 1,
             connection: group[0].connection,
-            text: 'What is the link?'
+            text: 'Click to reveal'
           }
         }
         return group
       })
     },
     updateWall () {
-      let last = this.solved.length - 1
-
       // Sets the most recently solved group as found and indexed
-      this.solved[last].forEach((brick) => {
+      this.solved[this.solved.length - 1].forEach((brick) => {
         brick.found = true
-        brick.groupIndex = last + 1
+        brick.groupIndex = this.currentGroup
       })
       this.currentGroup++
       this.updateSolvedGroups()
+      
+      // Emit that strikes now apply with two groups remaining
+      if (this.currentGroup === 3) {
+        this.$emit('twoGroupsRemaining')
+      }
 
       // No need to reference found Bricks
       this.brickRefs = this.brickRefs.filter((brick) => !brick.found)
@@ -159,14 +195,18 @@ export default {
         let finalSelection = []
         this.brickRefs.forEach((brick) => {
           brick.found = true
-          brick.groupIndex = 4
+          brick.groupIndex = this.currentGroup
           finalSelection.push(brick)
         })
         this.brickRefs = []
         this.solved.push(finalSelection)
         this.updateSolvedGroups()
-        this.$emit('solvedWall', true)
-        setTimeout(() => { this.showLinks = true }, 1250)
+        // Emit that the final group was resolved in time
+        if (!this.outOfTime && this.strikeCount !== 3) {
+          this.$emit('checkIfSolved', true)
+        }
+        setTimeout(() => { this.finished = true }, 1000)
+        setTimeout(() => { this.showLinks = true }, 3000)
       }
     }
   }
