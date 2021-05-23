@@ -1,6 +1,7 @@
 <template>
   <div class="flex justify-center items-center max-w-screen-xl bg-hero-floating-cogs">
     <!-- TODO: Modal transitions -->
+    <!-- Start modal, begins the game -->
     <Modal
       v-if="!started && showModal"
       :title="'Ready?'"
@@ -11,6 +12,7 @@
       :buttonText="'Begin'"
       @toggleModal="toggleModal"
     />
+    <!-- Game over modal, out of time -->
     <Modal 
       v-if="outOfTime && showModal"
       :title="'You ran out of time!'"
@@ -18,6 +20,7 @@
       :buttonText="'Continue'"
       @toggleModal="toggleModal"
     />
+    <!-- Game over modal, three strikes -->
     <Modal
       v-if="strikesRemaining === 0 && showModal"
       :title="'Three strikes!'"
@@ -26,7 +29,7 @@
       @toggleModal="toggleModal"
     />
     <div
-      class="relative flex flex-col w-11/12 py-3 mx-auto sm:py-6"
+      class="relative flex flex-col w-full sm:w-11/12 py-3 mx-auto sm:py-6"
       :class="showModal ? 'filter blur' : 'filter-none'"
     >
       <ConnectingWall
@@ -38,23 +41,23 @@
         @twoGroupsRemaining="twoGroupsRemaining = true"
         @decrementStrikes="strikesRemaining--"
       />
-      <h2 v-if="completed" class="my-6 text-white text-2xl text-center">
-        You solved the wall!
-      </h2>
-      <h2 v-else-if="outOfTime || strikesRemaining === 0" class="my-6 text-white text-2xl text-center">
-        What are the missing connections?
-      </h2>
-      <div v-else class="flex flex-row justify-center items-center">
-        <div class="flex flex-row w-1/4" :class="twoGroupsRemaining ? 'block' : 'hidden'">
-          <p v-for="strike in strikesRemaining" :key="strike" class="text-white">
-            Strike {{ strike }}
-          </p>
+      <div v-if="finished" class="p-3 my-6 border rounded-md bg-black border-blue-200 select-none">
+        <h2 class="text-white text-xl text-center sm:text-2xl">
+          {{ message }}
+        </h2>
+      </div>
+      <div v-else class="flex flex-col-reverse justify-center items-center sm:flex-row">
+        <div
+          class="flex flex-row justify-evenly w-1/3 sm:w-1/4"
+          :class="twoGroupsRemaining ? 'block' : 'invisible'"
+        >
+          <span v-for="strike in strikesRemaining" :key="strike" class="dot" />
         </div>
         <Timer
           :timeLimit="timeLimit"
           :started="started"
           :completed="completed"
-          class="w-3/4 my-6"
+          class="w-full my-6 sm:w-3/4"
         />
       </div>
     </div>
@@ -79,7 +82,7 @@ export default {
   data () {
     return {
       // timeLimit is in seconds
-      timeLimit: 20,
+      timeLimit: 180,
       // timer is a setTimeout to be cleared if the wall is solved in time
       timer: null,
       started: false,
@@ -133,6 +136,15 @@ export default {
           "clues": ["Anchor", "Bear off", "Pip", "Gammon"]
         }
       ]
+    },
+    finished () {
+      return this.completed || this.outOfTime || this.strikesRemaining === 0
+    },
+    message () {
+      if (this.completed) {
+        return 'You solved the wall! What are the connections?'
+      }
+      return 'What are the connections of the groups you didn\'t find?'
     }
   },  
   methods: {

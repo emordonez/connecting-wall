@@ -1,7 +1,11 @@
 <template>
-  <div class="flex flex-row justify-between">
-    <div class="transition-width duration-1000" :class="finished ? 'w-3/5' : 'w-full'">
-      <transition-group tag="div" class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
+  <div class="flex flex-col justify-between sm:flex-row">
+    <div class="transition-width duration-1000" :class="finished ? 'sm:w-5/8' : 'sm:w-full'">
+      <transition-group
+        tag="div"
+        class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3"
+        :class="{ 'grid-cols-4' : finished }"
+      >
         <Brick
           v-for="(item, index) in itemList"
           :key="index"
@@ -15,7 +19,7 @@
         />
       </transition-group>
     </div>
-    <div class="transition-width duration-1000" :class="finished ? 'w-1/3' : 'w-0'">
+    <div class="pt-8 transition-width duration-1000 sm:pt-0" :class="finished ? 'sm:w-1/3' : 'sm:w-0'">
       <div v-if="showLinks" class="grid grid-cols-1 gap-3 h-full">
         <transition
           tag="div"
@@ -28,7 +32,7 @@
           @click="revealLink(group)"
         >
           <p 
-            class="font-medium text-lg text-center lg:text-xl"
+            class="font-medium text-center sm:text-xl"
             :class="showLinks ? 'text-white' : 'text-transparent'"
           >
             {{ group.text }}
@@ -46,8 +50,7 @@ export default {
   props: {
     groups: Array,
     completed: Boolean,
-    outOfTime: Boolean,
-    strikes: Number
+    outOfTime: Boolean
   },
   components: {
     Brick
@@ -81,7 +84,6 @@ export default {
         connection: group.connection
       }))
     )
-
     // Shuffles the array
     let currIndex = list.length, randIndex, tempVal
     while (0 !== currIndex) {
@@ -92,7 +94,6 @@ export default {
       list[currIndex] = list[randIndex]
       list[randIndex] = tempVal
     }
-
     // itemsList is computed in the mounted hook so that it isn't cached
     this.itemList = list      
   },
@@ -119,9 +120,9 @@ export default {
         // Strikes apply after two groups have been found
         if (this.currentGroup === 3) {
           this.$emit('decrementStrikes')
-          this.count++
+          this.strikeCount++
         }
-        if (this.count === 3) {
+        if (this.strikeCount === 3) {
           this.$emit('checkIfSolved', false)
         }
       }
@@ -166,7 +167,7 @@ export default {
           return {
             id: index + 1,
             connection: group[0].connection,
-            text: 'Click to reveal the link'
+            text: 'Click to reveal'
           }
         }
         return group
@@ -201,11 +202,11 @@ export default {
         this.solved.push(finalSelection)
         this.updateSolvedGroups()
         // Emit that the final group was resolved in time
-        if (!this.outOfTime && this.strikes !== 3) {
+        if (!this.outOfTime && this.strikeCount !== 3) {
           this.$emit('checkIfSolved', true)
         }
         setTimeout(() => { this.finished = true }, 1000)
-        setTimeout(() => { this.showLinks = true }, 2250)
+        setTimeout(() => { this.showLinks = true }, 3000)
       }
     }
   }

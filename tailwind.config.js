@@ -24,6 +24,9 @@ module.exports = {
       },
       transitionProperty: {
         'width': 'width'
+      },
+      width: {
+        '5/8': '62.5%'
       }
     }
   },
