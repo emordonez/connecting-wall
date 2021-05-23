@@ -4,18 +4,24 @@
     <Modal
       v-if="!started && showModal"
       :title="'Ready?'"
-      :content="'You\'ll have three minutes to solve the wall. ' +
-        'Click to select or unselect items, looking for four groups of four connected items. ' +
-        'Beware of red herrings!'
-      "
+      :content="['You have three minutes to solve the wall. Click to select or unselect items.',
+        'Look for four groups of four connected items. Beware of red herrings!',
+        'After finding two groups, you have three strkes to identify the other two.'
+      ]"
       :buttonText="'Begin'"
       @toggleModal="toggleModal"
     />
     <Modal 
       v-if="outOfTime && showModal"
       :title="'You ran out of time!'"
-      :content="'You can see the solution and still get points for the connections of the groups ' +
-        'you didn\'t find.'"
+      :content="'You can now see the solution and try to identify the remaining connections.'"
+      :buttonText="'Continue'"
+      @toggleModal="toggleModal"
+    />
+    <Modal
+      v-if="strikesRemaining === 0 && showModal"
+      :title="'Three strikes!'"
+      :content="'The wall has frozen! But you can now see the remaining two groups.'"
       :buttonText="'Continue'"
       @toggleModal="toggleModal"
     />
@@ -25,24 +31,32 @@
     >
       <ConnectingWall
         ref="wall"
-        :completed="completed"
         :groups="groups"
+        :completed="completed"
         :outOfTime="outOfTime"
-        @solvedWall="solvedWall"
+        @checkIfSolved="checkIfSolved"
+        @twoGroupsRemaining="twoGroupsRemaining = true"
+        @decrementStrikes="strikesRemaining--"
       />
       <h2 v-if="completed" class="my-6 text-white text-2xl text-center">
-        You solved the wall! What are the connections?
+        You solved the wall!
       </h2>
-      <h2 v-if="outOfTime" class="my-6 text-white text-2xl text-center">
-        What are the connections?
+      <h2 v-else-if="outOfTime || strikesRemaining === 0" class="my-6 text-white text-2xl text-center">
+        What are the missing connections?
       </h2>
-      <Timer
-        v-else
-        :timeLimit="timeLimit"
-        :started="started"
-        :completed="completed"
-        class="my-6"
-      />
+      <div v-else class="flex flex-row justify-center items-center">
+        <div class="flex flex-row w-1/4" :class="twoGroupsRemaining ? 'block' : 'hidden'">
+          <p v-for="strike in strikesRemaining" :key="strike" class="text-white">
+            Strike {{ strike }}
+          </p>
+        </div>
+        <Timer
+          :timeLimit="timeLimit"
+          :started="started"
+          :completed="completed"
+          class="w-3/4 my-6"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -65,10 +79,15 @@ export default {
   data () {
     return {
       // timeLimit is in seconds
-      timeLimit: 3,
+      timeLimit: 20,
+      // timer is a setTimeout to be cleared if the wall is solved in time
+      timer: null,
       started: false,
       completed: false,
       outOfTime: false,
+      twoGroupsRemaining: false,
+      strikesRemaining: 3,
+      // Start modal shows at load to begin the game
       showModal: true
     }
   },
@@ -91,7 +110,6 @@ export default {
           return data[i].groups
         }
       }
-
       // Default wall
       return [
         {
@@ -118,23 +136,28 @@ export default {
     }
   },  
   methods: {
-    checkIfSolved () {
-      if (!this.completed) {
+    checkIfSolved (inTime) {
+      clearTimeout(this.timer)
+      if (!inTime) {
         this.outOfTime = true
         this.showModal = true
+      } else if (this.strikesRemaining === 0) {
+        this.showModal = true
+      } else {
+        this.completed = true
       }
-    },
-    solvedWall (isSolved) {
-      this.completed = isSolved
-      this.checkIfSolved()
     },
     toggleModal () {
       this.showModal = !this.showModal
+      // Start modal, begins the game
       if (!this.started) {
         this.started = true
-        setTimeout(this.checkIfSolved, this.timeLimit * 1000)
+        this.timer = setTimeout(() => {
+          this.checkIfSolved(this.completed)
+        }, this.timeLimit * 1000)
       }
-      if (this.outOfTime) {
+      // Game over modal, resolves the wall
+      if (this.outOfTime || this.strikesRemaining === 0) {
         setTimeout(this.$refs.wall.resolveWall, 1000)
       }
     }

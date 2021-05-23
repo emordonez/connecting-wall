@@ -7,7 +7,12 @@
     <h1 class="pb-6 font-medium text-2xl">
       {{ title }}
     </h1>
-    <p class="pb-8 text-lg">
+    <ul v-if="Array.isArray(content)" class="list-disc list-inside pb-8 text-lg">
+      <li v-for="item in content" :key="item" class="py-1">
+        {{ item }}
+      </li>
+    </ul>
+    <p v-else class="pb-8 text-lg">
       {{ content }}
     </p>
     <button
@@ -25,7 +30,7 @@
 export default {
   props: {
     title: String,
-    content: String,
+    content: [Array, String],
     buttonText: String
   },
   emits: ['toggleModal'],

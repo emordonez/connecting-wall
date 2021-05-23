@@ -16,7 +16,7 @@
       </transition-group>
     </div>
     <div class="transition-width duration-1000" :class="finished ? 'w-1/3' : 'w-0'">
-      <div v-if="finished" class="grid grid-cols-1 gap-3 h-full">
+      <div v-if="showLinks" class="grid grid-cols-1 gap-3 h-full">
         <transition
           tag="div"
           v-for="group in solved"
@@ -44,14 +44,15 @@ import Brick from '@/components/Brick.vue'
 
 export default {
   props: {
+    groups: Array,
     completed: Boolean,
     outOfTime: Boolean,
-    groups: Array
+    strikes: Number
   },
   components: {
     Brick
   },
-  emits: ['solvedWall'],
+  emits: ['checkIfSolved', 'twoGroupsRemaining', 'decrementStrikes'],
   data () {
     return {
       itemList: [],
@@ -59,12 +60,15 @@ export default {
       selections: [],
       solved: [],
       currentGroup: 1,
+      // Local strike count needed for emits to time properly
+      strikeCount: 0,
       groupClasses: {
         1: 'group-1',
         2: 'group-2',
         3: 'group-3',
         4: 'group-4'
       },
+      finished: false,
       showLinks: false
     }
   },
@@ -92,11 +96,6 @@ export default {
     // itemsList is computed in the mounted hook so that it isn't cached
     this.itemList = list      
   },
-  computed: {
-    finished () {
-      return this.completed || this.outOfTime
-    }
-  },
   methods: {
     addToSelections (brick) {
       if (brick.selected) {
@@ -116,6 +115,15 @@ export default {
       if (this.selections.filter((brick) => brick.groupId !== id).length === 0) {
         this.solved.push(this.selections)
         this.updateWall()
+      } else {
+        // Strikes apply after two groups have been found
+        if (this.currentGroup === 3) {
+          this.$emit('decrementStrikes')
+          this.count++
+        }
+        if (this.count === 3) {
+          this.$emit('checkIfSolved', false)
+        }
       }
       // Clear selections whether correct or incorrect
       this.selections.forEach((brick) => {
@@ -158,7 +166,7 @@ export default {
           return {
             id: index + 1,
             connection: group[0].connection,
-            text: 'What is the link?'
+            text: 'Click to reveal the link'
           }
         }
         return group
@@ -172,6 +180,11 @@ export default {
       })
       this.currentGroup++
       this.updateSolvedGroups()
+      
+      // Emit that strikes now apply with two groups remaining
+      if (this.currentGroup === 3) {
+        this.$emit('twoGroupsRemaining')
+      }
 
       // No need to reference found Bricks
       this.brickRefs = this.brickRefs.filter((brick) => !brick.found)
@@ -187,10 +200,12 @@ export default {
         this.brickRefs = []
         this.solved.push(finalSelection)
         this.updateSolvedGroups()
-        if (!this.outOfTime) {
-          this.$emit('solvedWall', true)
+        // Emit that the final group was resolved in time
+        if (!this.outOfTime && this.strikes !== 3) {
+          this.$emit('checkIfSolved', true)
         }
-        setTimeout(() => { this.showLinks = true }, 1250)
+        setTimeout(() => { this.finished = true }, 1000)
+        setTimeout(() => { this.showLinks = true }, 2250)
       }
     }
   }
