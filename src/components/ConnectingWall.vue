@@ -15,7 +15,7 @@
           :connection="item.connection"
           :currentGroup="currentGroup"
           :outOfTime="outOfTime"
-          @click="sounds.wallBtnClick.play()"
+          @click="sounds.wallBtnClick.cloneNode(true).play()"
           @clicked="addToSelections"
         />
       </transition-group>
@@ -127,7 +127,6 @@ export default {
         this.solved.push(this.selections)
         this.updateWall()
       } else {
-        this.sounds.incorrectGroup.play()
         // Strikes apply after two groups have been found
         if (this.currentGroup === 3) {
           this.sounds.loseLife.play()
@@ -137,6 +136,7 @@ export default {
         if (this.strikeCount === 3) {
           this.$emit('checkIfSolved', false)
         }
+        this.sounds.incorrectGroup.play()
       }
       // Clear selections whether correct or incorrect
       this.selections.forEach((brick) => {
@@ -147,6 +147,7 @@ export default {
     resolveWall () {
       // Iterate up to currentGroup === 4
       //  Final group resolution happens in updateWall
+      this.sounds.solveClue.play()
       while (this.currentGroup < 4) {
         let brickToSolve = this.brickRefs[0]
         let arr = [brickToSolve]
@@ -217,7 +218,7 @@ export default {
         if (!this.outOfTime && this.strikeCount !== 3) {
           this.$emit('checkIfSolved', true)
         }
-        setTimeout(() => { this.finished = true }, 1000)
+        setTimeout(() => { this.finished = true }, 1500)
         setTimeout(() => { this.showLinks = true }, 3000)
       }
     }
