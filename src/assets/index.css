@@ -20,11 +20,11 @@
         @apply text-blue-200 underline;
     }
     .dot {
-        @apply inline-block h-6 w-6 border rounded-full bg-gradient-to-br from-blue-300 to-blue-600 border-blue-200 sm:h-8 sm:w-8;
+        @apply inline-block h-4 w-4 border rounded-full bg-gradient-to-br from-blue-300 to-blue-600 border-blue-200 sm:h-8 sm:w-8;
     }
 
     div.content {
-        @apply p-2 text-lg sm:p-6;
+        @apply p-2 sm:p-6 sm:text-lg;
     }
     div.content h1 {
         @apply pb-3 font-semibold text-3xl sm:font-medium sm:text-4xl;

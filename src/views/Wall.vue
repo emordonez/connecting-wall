@@ -29,7 +29,7 @@
       @toggleModal="toggleModal"
     />
     <div
-      class="relative flex flex-col w-full sm:w-11/12 py-3 mx-auto sm:py-6"
+      class="relative flex flex-col-reverse w-full py-3 mx-auto sm:flex-col sm:w-11/12 sm:py-6"
       :class="showModal ? 'filter blur' : 'filter-none'"
     >
       <ConnectingWall
@@ -41,12 +41,12 @@
         @twoGroupsRemaining="twoGroupsRemaining = true"
         @decrementStrikes="strikesRemaining--"
       />
-      <div v-if="finished" class="p-3 my-6 border rounded-md bg-black border-blue-200 select-none">
+      <div v-if="finished" class="p-3 border rounded-md mt-3 mb-8 bg-black border-blue-200 select-none sm:my-6">
         <h2 class="text-white text-xl text-center sm:text-2xl">
           {{ message }}
         </h2>
       </div>
-      <div v-else class="flex flex-col-reverse justify-center items-center sm:flex-row">
+      <div v-else class="flex flex-row justify-center items-center mt-3 mb-8 sm:my-6">
         <div
           class="flex flex-row justify-evenly w-1/3 sm:w-1/4"
           :class="twoGroupsRemaining ? 'block' : 'invisible'"
@@ -57,7 +57,7 @@
           :timeLimit="timeLimit"
           :started="started"
           :completed="completed"
-          class="w-full my-6 sm:w-3/4"
+          class="w-2/3 sm:w-3/4"
         />
       </div>
     </div>
@@ -110,6 +110,9 @@ export default {
     next()
   },
   computed: {
+    finished () {
+      return this.completed || this.outOfTime || this.strikesRemaining === 0
+    },    
     groups () {
       for (let i = 0; i < data.length; i++) {
         // Prop comes in cast as a String
@@ -140,9 +143,6 @@ export default {
           "clues": ["Anchor", "Bear off", "Pip", "Gammon"]
         }
       ]
-    },
-    finished () {
-      return this.completed || this.outOfTime || this.strikesRemaining === 0
     },
     message () {
       if (this.completed) {

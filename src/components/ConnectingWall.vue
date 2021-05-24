@@ -3,7 +3,7 @@
     <div class="transition-width duration-1000" :class="finished ? 'sm:w-5/8' : 'sm:w-full'">
       <transition-group
         tag="div"
-        class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3"
+        class="grid grid-cols-2 gap-1 md:grid-cols-4 md:gap-2"
         :class="{ 'grid-cols-4' : finished }"
       >
         <Brick
@@ -21,7 +21,7 @@
       </transition-group>
     </div>
     <div class="pt-8 transition-width duration-1000 sm:pt-0" :class="finished ? 'sm:w-1/3' : 'sm:w-0'">
-      <div v-if="showLinks" class="grid grid-cols-1 gap-3 h-full">
+      <div v-if="showLinks" class="grid grid-cols-1 gap-2 h-full">
         <transition
           tag="div"
           v-for="group in solved"
