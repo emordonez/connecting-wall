@@ -15,6 +15,7 @@
           :connection="item.connection"
           :currentGroup="currentGroup"
           :outOfTime="outOfTime"
+          @click="sounds.wallBtnClick.cloneNode(true).play()"
           @clicked="addToSelections"
         />
       </transition-group>
@@ -72,7 +73,13 @@ export default {
         4: 'group-4'
       },
       finished: false,
-      showLinks: false
+      showLinks: false,
+      sounds: {
+        wallBtnClick: new Audio(require('@/assets/sounds/wallBtnClick.mp3')),
+        incorrectGroup: new Audio(require('@/assets/sounds/incorrectGroup.mp3')),
+        solveClue: new Audio(require('@/assets/sounds/solveClue.mp3')),
+        loseLife: new Audio(require('@/assets/sounds/loseLife.mp3'))
+      }
     }
   },
   mounted () {
@@ -114,17 +121,22 @@ export default {
 
       // Correct selections: All groupId's are equal
       if (this.selections.filter((brick) => brick.groupId !== id).length === 0) {
+        if (this.currentGroup < 3) {
+          this.sounds.solveClue.play()
+        }
         this.solved.push(this.selections)
         this.updateWall()
       } else {
         // Strikes apply after two groups have been found
         if (this.currentGroup === 3) {
+          this.sounds.loseLife.play()
           this.$emit('decrementStrikes')
           this.strikeCount++
         }
         if (this.strikeCount === 3) {
           this.$emit('checkIfSolved', false)
         }
+        this.sounds.incorrectGroup.play()
       }
       // Clear selections whether correct or incorrect
       this.selections.forEach((brick) => {
@@ -135,6 +147,7 @@ export default {
     resolveWall () {
       // Iterate up to currentGroup === 4
       //  Final group resolution happens in updateWall
+      this.sounds.solveClue.play()
       while (this.currentGroup < 4) {
         let brickToSolve = this.brickRefs[0]
         let arr = [brickToSolve]
@@ -205,7 +218,7 @@ export default {
         if (!this.outOfTime && this.strikeCount !== 3) {
           this.$emit('checkIfSolved', true)
         }
-        setTimeout(() => { this.finished = true }, 1000)
+        setTimeout(() => { this.finished = true }, 1500)
         setTimeout(() => { this.showLinks = true }, 3000)
       }
     }
