@@ -5,10 +5,10 @@ Find the four links connecting four items each among 16 seemingly unrelated clue
 
 ## Upcoming features
 
-- Sound effects
-- Optional elements from the show for extra pressure, such as:
+- ~~Sound effects~~
+- ~~Optional elements from the show for extra pressure, such as:~~
   - ~~Timer with adjustable time limit~~
-  - Three strikes once two groups are identified
+  - ~~Three strikes once two groups are identified~~
 - Editor for users to create their own walls
 - Saved/submitted wall repository
 - Further explanation for connections
