@@ -15,6 +15,7 @@
           :connection="item.connection"
           :currentGroup="currentGroup"
           :outOfTime="outOfTime"
+          @click="sounds.wallBtnClick.play()"
           @clicked="addToSelections"
         />
       </transition-group>
@@ -72,7 +73,13 @@ export default {
         4: 'group-4'
       },
       finished: false,
-      showLinks: false
+      showLinks: false,
+      sounds: {
+        wallBtnClick: new Audio(require('@/assets/sounds/wallBtnClick.mp3')),
+        incorrectGroup: new Audio(require('@/assets/sounds/incorrectGroup.mp3')),
+        solveClue: new Audio(require('@/assets/sounds/solveClue.mp3')),
+        loseLife: new Audio(require('@/assets/sounds/loseLife.mp3'))
+      }
     }
   },
   mounted () {
@@ -114,11 +121,16 @@ export default {
 
       // Correct selections: All groupId's are equal
       if (this.selections.filter((brick) => brick.groupId !== id).length === 0) {
+        if (this.currentGroup < 3) {
+          this.sounds.solveClue.play()
+        }
         this.solved.push(this.selections)
         this.updateWall()
       } else {
+        this.sounds.incorrectGroup.play()
         // Strikes apply after two groups have been found
         if (this.currentGroup === 3) {
+          this.sounds.loseLife.play()
           this.$emit('decrementStrikes')
           this.strikeCount++
         }

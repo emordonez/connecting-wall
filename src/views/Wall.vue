@@ -91,7 +91,11 @@ export default {
       twoGroupsRemaining: false,
       strikesRemaining: 3,
       // Start modal shows at load to begin the game
-      showModal: true
+      showModal: true,
+      sounds: {
+        ocFlurry: new Audio(require('@/assets/sounds/ocFlurry.mp3')),
+        timeUp: new Audio(require('@/assets/sounds/timeUp.mp3'))
+      }
     }
   },
   beforeRouteLeave (to, from, next) {
@@ -151,11 +155,13 @@ export default {
     checkIfSolved (inTime) {
       clearTimeout(this.timer)
       if (!inTime) {
+        this.sounds.timeUp.play()
         this.outOfTime = true
         this.showModal = true
       } else if (this.strikesRemaining === 0) {
         this.showModal = true
       } else {
+        this.sounds.ocFlurry.play()
         this.completed = true
       }
     },
