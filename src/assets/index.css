@@ -6,6 +6,10 @@
 @tailwind utilities;
 
 @layer base {
+    body {
+        @apply font-sans;
+    }
+
     .group-1 {
         @apply border-blue-900 bg-blue-900;
     }
