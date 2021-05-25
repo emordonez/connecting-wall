@@ -197,15 +197,15 @@ export default {
       }
     }
   },
-  watch: {
-    // Hack to force reload the router view
-    // TODO: Handle to/from edge cases
-    $route (to, from) {
-      if (to !== from) {
-        location.reload()
-      }
-    }
-  }
+  // watch: {
+  //   // Hack to force reload the router view
+  //   // TODO: Handle to/from edge cases
+  //   $route (to, from) {
+  //     if (to !== from) {
+  //       location.reload()
+  //     }
+  //   }
+  // }
 }
 </script>
 
