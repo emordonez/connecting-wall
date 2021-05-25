@@ -1,33 +1,34 @@
 <template>
-  <div class="flex justify-center items-center max-w-screen-xl bg-hero-floating-cogs">
-    <!-- TODO: Modal transitions -->
-    <!-- Start modal, begins the game -->
-    <Modal
-      v-if="!started && showModal"
-      :title="'Ready?'"
-      :content="['You have three minutes to solve the wall. Click to select or unselect items.',
-        'Look for four groups of four connected items. Beware of red herrings!',
-        'After finding two groups, you have three strkes to identify the other two.'
-      ]"
-      :buttonText="'Begin'"
-      @toggleModal="toggleModal"
-    />
-    <!-- Game over modal, out of time -->
-    <Modal 
-      v-if="outOfTime && showModal"
-      :title="'You ran out of time!'"
-      :content="'You can now see the solution and try to identify the remaining connections.'"
-      :buttonText="'Continue'"
-      @toggleModal="toggleModal"
-    />
-    <!-- Game over modal, three strikes -->
-    <Modal
-      v-if="strikesRemaining === 0 && showModal"
-      :title="'Three strikes!'"
-      :content="'The wall has frozen! But you can now see the remaining two groups.'"
-      :buttonText="'Continue'"
-      @toggleModal="toggleModal"
-    />
+  <div class="flex flex-col justify-center items-center max-w-screen-xl bg-hero-floating-cogs">
+    <transition-group name="swipe">
+      <!-- Start modal, begins the game -->
+      <Modal
+        v-if="!started && showModal"
+        :title="'Ready?'"
+        :content="['You have three minutes to solve the wall. Click to select or unselect items.',
+          'Look for four groups of four connected items. Beware of red herrings!',
+          'After finding two groups, you have three strkes to identify the other two.'
+        ]"
+        :buttonText="'Begin'"
+        @toggleModal="toggleModal"
+      />
+      <!-- Game over modal, out of time -->
+      <Modal 
+        v-if="outOfTime && showModal"
+        :title="'You ran out of time!'"
+        :content="'You can now see the solution and try to identify the remaining connections.'"
+        :buttonText="'Continue'"
+        @toggleModal="toggleModal"
+      />
+      <!-- Game over modal, three strikes -->
+      <Modal
+        v-if="strikesRemaining === 0 && showModal"
+        :title="'Three strikes!'"
+        :content="'The wall has frozen! But you can now see the remaining two groups.'"
+        :buttonText="'Continue'"
+        @toggleModal="toggleModal"
+      />
+    </transition-group>
     <div
       class="relative flex flex-col-reverse w-full py-3 mx-auto sm:flex-col sm:w-11/12 sm:py-6"
       :class="showModal ? 'filter blur' : 'filter-none'"
@@ -112,7 +113,7 @@ export default {
   computed: {
     finished () {
       return this.completed || this.outOfTime || this.strikesRemaining === 0
-    },    
+    },
     groups () {
       for (let i = 0; i < data.length; i++) {
         // Prop comes in cast as a String
@@ -191,3 +192,16 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.swipe-enter-active,
+.swipe-leave-active {
+  transition: transform 0.3s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.3s linear;
+}
+
+.swipe-enter,
+.swipe-leave-to {
+  transform: translateY(-75%);
+  opacity: 0;
+}
+</style>
