@@ -13,7 +13,8 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     fontFamily: {
-      sans: ['Roboto', 'ui-sans']
+      sans: ['Roboto', 'ui-sans'],
+      mono: ['Inconsolata', 'ui-monospace']
     },
     extend: {
       colors: {

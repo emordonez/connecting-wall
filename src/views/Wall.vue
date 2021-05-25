@@ -115,13 +115,29 @@ export default {
       return this.completed || this.outOfTime || this.strikesRemaining === 0
     },
     groups () {
-      for (let i = 0; i < data.length; i++) {
-        // Prop comes in cast as a String
-        if (data[i].id === Number(this.id)) {
-          return data[i].groups
+      // If receiving encoded wall
+      if (isNaN(this.id)) {
+        let groups = []
+        let json = JSON.parse(window.atob(this.id))
+        json.forEach((group, index) => {
+          groups.push({
+            "id": index + 1,
+            "connection": group.c,
+            "clues": group.cs
+          })
+        })
+        return groups
+      }
+      // If receiving id of saved wall
+      else {
+        for (let i = 0; i < data.length; i++) {
+          // Prop comes in cast as a String
+          if (data[i].id === Number(this.id)) {
+            return data[i].groups
+          }
         }
       }
-      // Default wall
+      // Default wall if saved wall not found
       return [
         {
           "id": 1,
