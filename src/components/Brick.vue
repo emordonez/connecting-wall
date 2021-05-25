@@ -26,7 +26,7 @@ export default {
     groupId: Number,
     connection: String,
     currentGroup: Number,
-    outOfTime: Boolean
+    inProgress: Boolean
   },
   emits: ['clicked', 'resize'],
   data () {
@@ -75,10 +75,7 @@ export default {
       this.$emit('resize', fontSize)
     },
     selectBrick () {
-      if (this.outOfTime) {
-        return
-      }
-      if (!this.found) {
+      if (this.inProgress && !this.found) {
         this.selected = !this.selected
         this.$emit('clicked', this)
       }

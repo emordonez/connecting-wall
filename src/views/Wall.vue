@@ -36,7 +36,7 @@
       <ConnectingWall
         ref="wall"
         :groups="groups"
-        :completed="completed"
+        :inProgress="inProgress"
         :outOfTime="outOfTime"
         @checkIfSolved="checkIfSolved"
         @twoGroupsRemaining="twoGroupsRemaining = true"
@@ -160,6 +160,9 @@ export default {
           "clues": ["Anchor", "Bear off", "Pip", "Gammon"]
         }
       ]
+    },
+    inProgress () {
+      return this.started && !this.finished 
     },
     message () {
       if (this.completed) {

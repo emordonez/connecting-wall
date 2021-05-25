@@ -14,8 +14,7 @@
           :groupId="item.groupId"
           :connection="item.connection"
           :currentGroup="currentGroup"
-          :outOfTime="outOfTime"
-          @click="sounds.wallBtnClick.cloneNode(true).play()"
+          :inProgress="inProgress"
           @clicked="addToSelections"
         />
       </transition-group>
@@ -50,7 +49,7 @@ import Brick from '@/components/Brick.vue'
 export default {
   props: {
     groups: Array,
-    completed: Boolean,
+    inProgress: Boolean,
     outOfTime: Boolean
   },
   components: {
@@ -106,6 +105,7 @@ export default {
   },
   methods: {
     addToSelections (brick) {
+      this.sounds.wallBtnClick.cloneNode(true).play()
       if (brick.selected) {
         this.selections.push(brick)
         if (this.selections.length === 4) {
