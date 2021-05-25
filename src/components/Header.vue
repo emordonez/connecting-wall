@@ -6,6 +6,9 @@
       <div class="flex flex-col items-start space-y-2
         sm:flex-row sm:items-center sm:space-x-6 sm:space-y-0"
       >
+        <div class="hidden sm:block">
+          <img src="@/assets/logo.png" width="32" height="32" alt="Water Wall">
+        </div>
         <RouterLink
           v-for="link in links"
           :key="link"
