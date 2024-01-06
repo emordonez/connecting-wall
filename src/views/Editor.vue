@@ -147,7 +147,7 @@ export default {
           })
         })
         // this.url = 'localhost:8080/wall/' + window.btoa(JSON.stringify(arr))
-        this.url = 'https://connecting-wall.netlify.app/wall/' + window.btoa(JSON.stringify(arr))
+        this.url = 'https://connecting-wall.netlify.app/wall/' + window.btoa(encodeURIComponent(JSON.stringify(arr)))
       } else {
         alert('Make sure you have no duplicated clues or connections.')
       }

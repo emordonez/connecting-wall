@@ -118,7 +118,7 @@ export default {
       // If receiving encoded wall
       if (isNaN(this.id)) {
         let groups = []
-        let json = JSON.parse(window.atob(this.id))
+        let json = JSON.parse(decodeURIComponent(window.atob(this.id)))
         json.forEach((group, index) => {
           groups.push({
             "id": index + 1,
